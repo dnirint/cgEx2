@@ -30,12 +30,13 @@ public class MeshData
         return mesh;
     }
 
+    // Calculates surface normals for each vertex, according to face orientation
     public void CalculateNormals()
     {
         // Your implementation
         List<Vector3> normalsList = new List<Vector3>();
         List<Vector3>[] verticeNormals = new List<Vector3>[vertices.Count];
-        for (int i = 0; i < triangles.Count; i+=3)
+        for (int i = 0; i < triangles.Count; i += 3)
         {
             int a_i = triangles[i];
             int b_i = triangles[i + 1];
@@ -47,7 +48,7 @@ public class MeshData
             var a_b = a - b;
             var norm = Vector3.Cross(a_c, a_b).normalized;
 
-            int[] indices = new int[3]{ a_i, b_i, c_i };
+            int[] indices = new int[3] { a_i, b_i, c_i };
 
             foreach (int ind in indices)
             {
@@ -62,8 +63,9 @@ public class MeshData
             }
         }
 
-        foreach(var normList in verticeNormals)
+        foreach (var normList in verticeNormals)
         {
+            Debug.Log(normList.Count);
             Vector3 sum = Vector3.zero;
             foreach (var vec in normList)
             {
@@ -76,12 +78,26 @@ public class MeshData
         normals = normalsList.ToArray();
     }
 
-    // Calculates surface normals for each vertex, according to face orientation
-
 
     // Edits mesh such that each face has a unique set of 3 vertices
     public void MakeFlatShaded()
     {
-        // Your implementation
+        List<Vector3> newVertices = new List<Vector3>();
+        for (int i = 0; i < triangles.Count; i += 3)
+        {
+            int a_i = triangles[i];
+            int b_i = triangles[i + 1];
+            int c_i = triangles[i + 2];
+            Vector3 a = vertices[a_i];
+            Vector3 b = vertices[b_i];
+            Vector3 c = vertices[c_i];
+            newVertices.Add(a);
+            newVertices.Add(b);
+            newVertices.Add(c);
+            triangles[i] = i;
+            triangles[i + 1] = i + 1;
+            triangles[i + 2] = i + 2;
+        }
+        vertices = newVertices;
     }
 }
