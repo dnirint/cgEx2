@@ -1,4 +1,4 @@
-﻿Shader "CG/BlinnPhongGouraud"
+﻿Shader "CG/BlinnPhong"
 {
     Properties
     {
@@ -11,7 +11,7 @@
     {
         Pass
         {
-            Tags { "LightMode" = "ForwardBase" } 
+            Tags { "LightMode" = "ForwardBase" }
 
             CGPROGRAM
 
@@ -37,24 +37,18 @@
                 struct v2f
                 {
                     float4 pos : SV_POSITION;
-                    float3 posWorld: TEXCOORD0;
-                    float3 normalDir: TEXCOORD1;
+                    float4 color: COLOR3;
                 };
 
 
                 v2f vert (appdata input)
                 {
                     v2f output;
-                    output.posWorld = mul(unity_ObjectToWorld,input.vertex);
-                    output.normalDir = normalize(input.normal);
+                    float3 posWorld = mul(unity_ObjectToWorld,input.vertex);
+                    float3 normalDir = normalize(input.normal);
                     output.pos = UnityObjectToClipPos(input.vertex);
-                    return output;
-                }
 
-
-                float4 frag(v2f input) : COLOR
-                {
-                    float3 n = input.normalDir;
+                    float3 n = normalDir;
 
                     float3 v = normalize(_WorldSpaceCameraPos.xyz);
 
@@ -68,7 +62,15 @@
 
                     float3 color_s = _LightColor0.rgb  * _SpecularColor.rgb * pow(max(0.0, dot(h, n)), _Shininess);
 
-                    return float4(color_a + color_d  + color_s, 1.0);
+                    output.color = float4(color_a + color_d  + color_s, 1.0);
+                    return output;
+                }
+
+
+                float4 frag(v2f input) : COLOR
+                {
+                    
+                    return input.color;
                 }
 
             ENDCG

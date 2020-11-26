@@ -36,25 +36,24 @@
 
                 struct v2f
                 {
-                    float4 pos : SV_POSITION;
-                    float3 posWorld: TEXCOORD0;
-                    float3 normalDir: TEXCOORD1;
+                    float4 vertex: SV_POSITION;
+                    float3 normal: NORMAL;
                 };
 
 
                 v2f vert (appdata input)
                 {
                     v2f output;
-                    output.posWorld = mul(unity_ObjectToWorld,input.vertex);
-                    output.normalDir = normalize(input.normal);
-                    output.pos = UnityObjectToClipPos(input.vertex);
+                    output.vertex = UnityObjectToClipPos(input.vertex);
+                    output.normal = input.normal;
                     return output;
                 }
 
 
                 float4 frag(v2f input) : COLOR
                 {
-                    float3 n = input.normalDir;
+                    
+                    float3 n = normalize(input.normal);
 
                     float3 v = normalize(_WorldSpaceCameraPos.xyz);
 
