@@ -45,8 +45,8 @@ public class MeshData
             Vector3 b = vertices[b_i];
             Vector3 c = vertices[c_i];
             var a_c = a - c;
-            var a_b = a - b;
-            var norm = Vector3.Cross(a_c, a_b).normalized;
+            var b_c = b - c;
+            var norm = Vector3.Cross(a_c, b_c).normalized;
 
             int[] indices = new int[3] { a_i, b_i, c_i };
 
